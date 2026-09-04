@@ -1,0 +1,80 @@
+import numpy as np
+from cryotank_sizing.tank_general_properties import tank_height, get_tank_volume
+
+class Fuselage:
+    def __init__(self, Rmax, Rmin, Lmax):
+        self.Rmax = Rmax
+        self.Rmin = Rmin
+        self.Lmax = Lmax
+
+
+class InnerTank:
+    def __init__ (self, fuselage, inner_volume, offset, step):
+        self.inner_volume = inner_volume
+        self.Rmax = fuselage.Rmax
+        self.Rmin = fuselage.Rmin
+        self.Lmax = fuselage.Lmax
+        self.offset = offset
+        self.step = step
+
+    def get_inner_tank_dimensions(self):
+        '''
+        inputs:
+            inner_volume --> the required inner tank volume for LH2
+            Rmax --> the maximum outer tank radius based on AC geometry
+            Rmin --> the minimum outer tank radius based on AC geometry
+            Lmax --> the maximum length of the tank (cyllindrical + elliptical parts) based on AC geometry
+        '''
+
+        #Calculate max internal tank properties from available space within the fuselage
+        rmax = self.Rmax - self.offset
+        rmin = self.Rmin - self.offset
+        lmax = self. Lmax - 2*rmin*0.75 - 2*self.offset
+
+
+        #Compute the tank height at each length increment starting from Rmax
+        lengths = np.arange(0,lmax,1/self.step)
+        height_inner = tank_height(rmax,rmin,lmax,len(lengths))
+
+        # Set up the while loop
+        solution = False
+        i = 0
+
+        # Iterate until the first radius-length combination is found for which the inner volume requirement is satisfied
+        # The design is optimised for the highest surface area-to-volume ratio, i. e. the highest R/L
+
+        while i < len(lengths):
+            volume = get_tank_volume(height_inner[i], lengths[i])
+            if volume >= self.inner_volume:
+                inner_dimensions = ([round(float(height_inner[i]),5), round(float(lengths[i]),5), round(float(volume),5)])
+                solution = True
+                break
+            i+=1
+
+        # Evaluate whether a solution has been found
+        if not solution:
+            raise ValueError("No inner tank solution found for the given volume")
+
+
+        return inner_dimensions
+
+
+class OuterTank:
+    def __init__ (self, fuselage, inner_tank):
+        self.inner_tank = inner_tank
+        self.fuselage = fuselage
+        return
+
+    def get_outer_tank_dimensions(self):
+
+        # Apply offset to the inner tank dimensions
+        r_outer = self.inner_tank.get_inner_tank_dimensions()[0] + self.inner_tank.offset
+        l_outer = self.inner_tank.get_inner_tank_dimensions()[1] + 2* self.inner_tank.offset
+
+        # Calculate the volume and return the result
+        volume_outer = get_tank_volume(r_outer, l_outer)
+
+        outer_dimensions = [r_outer, l_outer, volume_outer]
+
+        return outer_dimensions
+
