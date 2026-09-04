@@ -38,8 +38,8 @@ for i in range(len(height_array)):
     r_in.append(r_inner)
 
 # minimise length so first one in array
-router = r_in[0]
-rinner = r_out[0]
+router = np.nonzero(r_in)[0]
+rinner = np.nonzero(r_out)[0]
 gap = router - rinner
 fuselage = Fuselage(Rmax, Rmin, Lmax, step)
 innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset, step=step)

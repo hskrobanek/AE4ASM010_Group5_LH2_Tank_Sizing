@@ -1,5 +1,5 @@
 import numpy as np
-from tank_general_properties import get_tank_volume
+from cryotank_sizing.tank_general_properties import get_tank_volume
 # Inputs
 boil_off_rate = 0.1  # %/h, placeholder
 volume_LH2 = 0.3  # m3, placeholder
@@ -15,13 +15,13 @@ def heat_in_calculation(boil_off_rate, volume_LH2, density_LH2, latent_heat):
     return Qin
 
 
-def radius_outer(volumeLH2, max_radius, Length, Qin_needed, thermal_conductivity_inner, thermal_conductivity_air, T_ext_env, T_int_surface,previous_volume = 100, h = 25):
+def radius_outer(volumeLH2, max_radius, Length, Qin_needed, thermal_conductivity_inner, thermal_conductivity_air, T_ext_env, T_int_surface,previous_volume = 100, h = 25, final_inner_radius = 0, final_outer_radius = 0):
     # assume 1 metal liner of 1 mm as inner shell
     # assume 1 layer of air unknown thickness
     # assume 1 layer of metal 1 mm as outer shell
     r_external = max_radius
     # for loop that goes from inner radius to maximum to see if Qin is low enough 
-    for i in range(max_radius):
+    for i in range(int(max_radius)):
         r_inner = max_radius - i
         radius_inner_plus_thickness = r_inner + 1
         r_inner_ratio = r_inner / radius_inner_plus_thickness
