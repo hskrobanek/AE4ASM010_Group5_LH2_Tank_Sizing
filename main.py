@@ -2,13 +2,13 @@ from objects.fuselage import Fuselage, InnerTank, OuterTank
 from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
 
 # Define fuselage compartment geometry
-Rmax = 0.425                  # [m]
-Rmin = 0.285                  # [m]
-Lmax = 1.135                  # [m]
+Rmax = 0.450                  # [m]
+Rmin = 0.300                  # [m]
+Lmax = 1.150                  # [m]
 offset = 0.010                # TODO: Determine the offset
 
 # Define inner volume and precision
-inner_volume = 0.25           # TODO: Determine the inner volume
+inner_volume = 0.298           # TODO: Determine the inner volume
 step = 100000
 
 fuselage = Fuselage(Rmax, Rmin, Lmax)
