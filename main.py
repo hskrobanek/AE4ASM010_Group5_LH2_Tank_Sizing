@@ -9,7 +9,7 @@ offset = 0.010                # TODO: Determine the offset
 
 # Define inner volume and precision
 inner_volume = 0.298           # TODO: Determine the inner volume
-step = 100000
+step = 1000000
 
 fuselage = Fuselage(Rmax, Rmin, Lmax, step)
 innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset, step=step)
