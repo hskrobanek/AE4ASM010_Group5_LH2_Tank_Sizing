@@ -8,7 +8,7 @@ Lmax = 1.135
 offset = 0.010
 
 # Define inner volume and precision
-inner_volume = 0.23
+inner_volume = 0.25
 step = 1000
 
 fuselage = Fuselage(Rmax, Rmin, Lmax)
