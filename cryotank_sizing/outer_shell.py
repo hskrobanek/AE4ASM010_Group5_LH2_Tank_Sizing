@@ -12,9 +12,13 @@ def heat_in_calculation(boil_off_rate, volume_LH2, density_LH2, latent_heat):
     return Qin
 
 
-def radius_outer(radius_inner, thermal_conductivity_inner, ):
+def radius_outer(radius_inner, max_radius, thermal_conductivity_inner, ):
     # assume 1 metal liner of 1 mm as inner shell
     # assume 1 layer of air unknown thickness
     # assume 1 layer of metal 1 mm as outer shell
     radius_inner_plus_thickness = radius_inner + 1
-    
+    radius_left = max_radius
+    # for loop that goes from inner radius to maximum to see if Qin is low enough 
+
+
+    return outer_radius
