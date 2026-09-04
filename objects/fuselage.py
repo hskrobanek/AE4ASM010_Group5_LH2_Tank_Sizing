@@ -10,7 +10,7 @@ class Fuselage:
 
     def get_height_profile(self):
         lengths = np.arange(0,self.Lmax,1/self.step)
-        height = tank_height(self.Rmax,self.Rmin,self.Lmax,len(lengths))
+        height, _ = tank_height(self.Rmax,self.Rmin,self.Lmax,len(lengths))
         return height
 
 
@@ -40,27 +40,27 @@ class InnerTank:
 
         #Compute the tank height at each length increment starting from Rmax
         lengths = np.arange(0,lmax,1/self.fuselage.step)
-        height_inner = self.fuselage.get_height_profile() - self.offset
+        height_inner, _ = tank_height(rmax,rmin,lmax,len(lengths))
+        height_fuselage = self.fuselage.get_height_profile()
         height_total = tank_height(self.Rmax, self.Rmin, self.Lmax, len(lengths))
 
         # Set up the loop
         solution = False
+        i=0
 
 
-        for i in range(len(lengths)):
 
         # Iterate until the first radius-length combination is found for which the inner volume requirement is satisfied
         # The design is optimised for the highest surface area-to-volume ratio, i. e. the highest R/L
-            radius_inner = height_inner[i]
-            tank_length = radius_inner * 0.75 + lengths[i]
-            id = int(round(tank_length * self.fuselage.step))
-            height_updated = height_inner[id]
-            volume = get_tank_volume(height_updated, lengths[i])
-            if np.abs(volume - self.inner_volume) < 1e-6:
-                inner_dimensions = ([round(float(height_updated),5), round(float(lengths[i]),5), round(float(volume),5)])
+        while i < len(lengths):
+            volume = get_tank_volume(height_inner[i], lengths[i])
+            if volume >= self.inner_volume:
+                inner_dimensions = ([round(float(height_inner[i]),5), round(float(lengths[i]),5), round(float(volume),5)])
+            #if np.abs(volume - self.inner_volume) < 1e-6:
+            #    inner_dimensions = ([round(float(height_updated),5), round(float(lengths[i]),5), round(float(volume),5)])
                 solution = True
                 break
-
+            i+=1
         # Evaluate whether a solution has been found
         if not solution:
             raise ValueError("No inner tank solution found for the given volume")
