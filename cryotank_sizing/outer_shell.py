@@ -15,17 +15,16 @@ def heat_in_calculation(boil_off_rate, volume_LH2, density_LH2, latent_heat):
     return Qin
 
 
-def radius_outer(volumeLH2, radius_inner, max_radius, Length, Qin_needed, thermal_conductivity_inner, thermal_conductivity_air, T_ext_env, T_int_surface,previous_volume = 100, h = 25):
+def radius_outer(volumeLH2, max_radius, Length, Qin_needed, thermal_conductivity_inner, thermal_conductivity_air, T_ext_env, T_int_surface,previous_volume = 100, h = 25):
     # assume 1 metal liner of 1 mm as inner shell
     # assume 1 layer of air unknown thickness
     # assume 1 layer of metal 1 mm as outer shell
     r_external = max_radius
-    radius_inner_plus_thickness = radius_inner + 1
-    r_inner_ratio = radius_inner / radius_inner_plus_thickness 
-    radius_left = max_radius - radius_inner
     # for loop that goes from inner radius to maximum to see if Qin is low enough 
     for i in range(max_radius):
         r_inner = max_radius - i
+        radius_inner_plus_thickness = r_inner + 1
+        r_inner_ratio = r_inner / radius_inner_plus_thickness
         tank_volume = get_tank_volume(r_inner, Length)
         for j in range(r_external-r_inner):
             r_vaccuum_ratio = (r_inner + j)/(r_external - 1) 

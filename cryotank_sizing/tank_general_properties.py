@@ -17,10 +17,11 @@ def tank_height(max_radius:float, min_radius:float, max_length:float, step:int):
 
     length_increment = max_length/step
     height = np.zeros(step)
+    length = np.zeros(step)
     slope = (max_radius-min_radius)/max_length
 
     for i in range(step):
         height[i] = max_radius - slope*length_increment*i
-    return height
+    return height, length
 
 
