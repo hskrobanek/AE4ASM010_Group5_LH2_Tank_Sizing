@@ -29,12 +29,13 @@ class InnerTank:
         #Calculate max internal tank properties from available space within the fuselage
         rmax = self.Rmax - self.offset
         rmin = self.Rmin - self.offset
-        lmax = self. Lmax - 2*rmin*0.75 - 2*self.offset
+        lmax = self.Lmax - 2*rmin*0.75 - 2*self.offset
 
 
         #Compute the tank height at each length increment starting from Rmax
         lengths = np.arange(0,lmax,1/self.step)
         height_inner = tank_height(rmax,rmin,lmax,len(lengths))
+        height_total = tank_height(self.Rmax, self.Rmin, self.Lmax, self.step)
 
         # Set up the while loop
         solution = False
