@@ -36,17 +36,16 @@ class InnerTank:
         # The design is optimised for the highest surface area-to-volume ratio, i. e. the highest R/L
         while i < len(lengths):
 
-            # TODO: Take the inner radius and calculate the location of the tangency point
+            # Take the inner radius and calculate the location of the tangency point
             radius_inner = height_inner[i]
             H_inner = 0.75*radius_inner
 
             id = int((H_inner+lengths[i])*self.fuselage.step)
 
-            # TODO: Based on the tangecy point, find the corresponding inner tank height
+            # Based on the tangecy point, find the corresponding inner tank height
             radius_inner_tan = height_inner[id]
 
-            # TODO: Calculate the volume of the tank with the newly found radius
-
+            # Calculate the volume of the tank with the newly found radius
 
             volume = get_tank_volume(radius_inner_tan, lengths[i])
 

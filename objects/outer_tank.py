@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 from cryotank_sizing.tank_general_properties import tank_height, get_tank_volume
 
 class OuterTank:
@@ -25,6 +27,7 @@ class FitCheck:
         self.innertank = innertank
         self.outertank = outertank
 
+
     def check_if_outer_tank_fits(self):
         outer_dimensions = self.outertank.get_outer_tank_dimensions()
         fuselage_heights = self.fuselage.fuselage_height
@@ -41,6 +44,21 @@ class FitCheck:
             print("\nThe outer tank fits at the endpoint.")
         else:
             print(f"\nThe outer tank does not fit at the endpoint. \nTank height at endpoint: {height_fus_end}")
+
+    def plot_tank_geometry(self):
+
+        # TODO: Start with the outer tank
+
+        # TODO: Calculate the ellipsoid coordinates at the elliptical domes
+
+
+        # TODO: Append the constant radius for the cyllindrical part
+
+        # TODO: Repeat for the inner tank
+
+        plt.plot(self.fuselage.fuselage_lengths, self.fuselage.fuselage_height)
+        plt.plot(self.fuselage.fuselage_lengths, -self.fuselage.fuselage_height)
+        plt.show()
 
 
 

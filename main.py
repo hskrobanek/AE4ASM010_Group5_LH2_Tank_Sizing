@@ -50,6 +50,8 @@ fit = FitCheck(fuselage = fuselage, innertank = innertank, outertank = outertank
 inner_dimensions = innertank.get_inner_tank_dimensions()
 outer_dimensions = outertank.get_outer_tank_dimensions()
 
+fit.plot_tank_geometry()
+
 print(f'Inner tank dimensions: \nRadius: {round(inner_dimensions[0]*1000,5)} mm \nHeight: {inner_dimensions[0]*1000*0.75} mm \
         \nTotal length: {round(1000*(inner_dimensions[0]*0.75*2+inner_dimensions[1]),3)} mm  \nLength (cyllindrical part): {round(inner_dimensions[1]*1000,5)} mm \nVolume: {inner_dimensions[2]} m^3')
 print('\n')
