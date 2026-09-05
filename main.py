@@ -1,4 +1,8 @@
-from objects.fuselage import Fuselage, InnerTank, OuterTank, FitCheck
+from objects.fuselage import Fuselage
+from objects.inner_tank import InnerTank
+from objects.outer_tank import OuterTank, FitCheck
+
+
 from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
 from cryotank_sizing.outer_shell import *
 
@@ -8,13 +12,10 @@ Rmin = 0.300                  # [m]
 Lmax = 1.150                  # [m]
 
 
-
-
-
 offset = 0.010                # TODO: Determine the offset
 
 # Define inner volume and precision
-inner_volume = 0.298           # TODO: Determine the inner volume
+inner_volume = 0.2985           # TODO: Determine the inner volume
 step = 1000000
 
 # Inputs
@@ -42,7 +43,7 @@ router = np.nonzero(r_in)[0]
 rinner = np.nonzero(r_out)[0]
 gap = router - rinner
 fuselage = Fuselage(Rmax, Rmin, Lmax, step)
-innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset, step=step)
+innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset)
 outertank = OuterTank(fuselage = fuselage, inner_tank = innertank)
 fit = FitCheck(fuselage = fuselage, innertank = innertank, outertank = outertank)
 
