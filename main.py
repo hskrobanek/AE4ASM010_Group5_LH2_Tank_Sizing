@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from objects.fuselage import Fuselage
 from objects.inner_tank import InnerTank
 from objects.outer_tank import OuterTank, FitCheck
-from objects.ellipse_test import GeometryPlot
+from objects.geometry_plot import GeometryPlot
 
 
 from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
@@ -64,10 +64,8 @@ print(f'Outer tank dimensions: \nRadius: {round(outer_dimensions[0]*1000,5)} mm 
 plot.get_tank_shape(inner_tank=True, outer_tank=False)
 plot.get_tank_shape(inner_tank=False, outer_tank=True)
 
-
-plt.axis("equal")
-plt.grid(True)
 plt.show()
+
 
 fit.check_if_outer_tank_fits()
 
