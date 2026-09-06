@@ -24,4 +24,3 @@ def tank_height(max_radius:float, min_radius:float, max_length:float, step:int):
         height[i] = max_radius - slope*length_increment*i
     return height, length
 
-

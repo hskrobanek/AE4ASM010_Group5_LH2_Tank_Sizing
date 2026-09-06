@@ -1,6 +1,8 @@
+import matplotlib.pyplot as plt
 from objects.fuselage import Fuselage
 from objects.inner_tank import InnerTank
 from objects.outer_tank import OuterTank, FitCheck
+from objects.ellipse_test import GeometryPlot
 
 
 from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
@@ -46,11 +48,10 @@ fuselage = Fuselage(Rmax, Rmin, Lmax, step)
 innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset)
 outertank = OuterTank(fuselage = fuselage, inner_tank = innertank)
 fit = FitCheck(fuselage = fuselage, innertank = innertank, outertank = outertank)
+plot = GeometryPlot(fuselage = fuselage, inner_tank = innertank, outer_tank = outertank)
 
 inner_dimensions = innertank.get_inner_tank_dimensions()
 outer_dimensions = outertank.get_outer_tank_dimensions()
-
-fit.plot_tank_geometry()
 
 print(f'Inner tank dimensions: \nRadius: {round(inner_dimensions[0]*1000,5)} mm \nHeight: {inner_dimensions[0]*1000*0.75} mm \
         \nTotal length: {round(1000*(inner_dimensions[0]*0.75*2+inner_dimensions[1]),3)} mm  \nLength (cyllindrical part): {round(inner_dimensions[1]*1000,5)} mm \nVolume: {inner_dimensions[2]} m^3')
@@ -60,4 +61,14 @@ print(f'Outer tank dimensions: \nRadius: {round(outer_dimensions[0]*1000,5)} mm 
 
 # Check if the tank fits inside the fuselage, i. e. if the outer shell radius is not greater than the fuselage height at the minimum fuselage height location
 
+plot.get_tank_shape(inner_tank=True, outer_tank=False)
+plot.get_tank_shape(inner_tank=False, outer_tank=True)
+
+
+plt.axis("equal")
+plt.grid(True)
+plt.show()
+
 fit.check_if_outer_tank_fits()
+
+

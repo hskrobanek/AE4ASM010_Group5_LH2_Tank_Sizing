@@ -12,7 +12,7 @@ class OuterTank:
 
         # Apply offset to the inner tank dimensions
         r_outer = self.inner_tank.get_inner_tank_dimensions()[0] + self.inner_tank.offset
-        l_outer = self.inner_tank.get_inner_tank_dimensions()[1] + 2* self.inner_tank.offset
+        l_outer = self.inner_tank.get_inner_tank_dimensions()[1] + 0.75*self.inner_tank.offset
 
         # Calculate the volume and return the result
         volume_outer = get_tank_volume(r_outer, l_outer)
@@ -45,20 +45,7 @@ class FitCheck:
         else:
             print(f"\nThe outer tank does not fit at the endpoint. \nTank height at endpoint: {height_fus_end}")
 
-    def plot_tank_geometry(self):
 
-        # TODO: Start with the outer tank
-
-        # TODO: Calculate the ellipsoid coordinates at the elliptical domes
-
-
-        # TODO: Append the constant radius for the cyllindrical part
-
-        # TODO: Repeat for the inner tank
-
-        plt.plot(self.fuselage.fuselage_lengths, self.fuselage.fuselage_height)
-        plt.plot(self.fuselage.fuselage_lengths, -self.fuselage.fuselage_height)
-        plt.show()
 
 
 

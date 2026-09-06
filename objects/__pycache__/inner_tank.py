@@ -40,7 +40,7 @@ class InnerTank:
             radius_inner = height_inner[i]
             H_inner = 0.75*radius_inner
 
-            id = int((H_inner+lengths[i])*self.fuselage.step)
+            id = int((H_inner+lengths[i]+self.offset)*self.fuselage.step)
 
             # Based on the tangecy point, find the corresponding inner tank height
             radius_inner_tan = height_inner[id]
@@ -50,7 +50,7 @@ class InnerTank:
             volume = get_tank_volume(radius_inner_tan, lengths[i])
 
             if volume >= self.inner_volume:
-                inner_dimensions = (radius_inner_tan, lengths[i], volume)
+                self.inner_dimensions = (radius_inner_tan, lengths[i], volume)
             #if np.abs(volume - self.inner_volume) < 1e-6:
             #    inner_dimensions = ([round(float(height_updated),5), round(float(lengths[i]),5), round(float(volume),5)])
                 solution = True
@@ -60,4 +60,4 @@ class InnerTank:
         if not solution:
             raise ValueError("No inner tank solution found for the given volume")
 
-        return inner_dimensions
+        return self.inner_dimensions
