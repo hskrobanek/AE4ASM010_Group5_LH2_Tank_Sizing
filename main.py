@@ -1,72 +1,73 @@
-import matplotlib.pyplot as plt
-from objects.fuselage import Fuselage
-from objects.inner_tank import InnerTank
-from objects.outer_tank import OuterTank, FitCheck
-from objects.geometry_plot import GeometryPlot
+import math
 
 
-from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
-from cryotank_sizing.outer_shell import *
+# Material: given metal
+yield_strength = 345e6    # Pa
+safety_factor = 1.0       
 
-# Define fuselage compartment geometry
-Rmax = 1.022/2                  # [m]
-Rmin = 0.602/2                  # [m]
-Lmax = 1.680                  # [m]
+# Geometry
+R = 0.2
+H = 0.1
 
-
-offset = 0.035                # TODO: Determine the offset
-
-# Define inner volume and precision
-inner_volume = 0.36           # TODO: Determine the inner volume
-step = 1000000
-
-# Inputs
-boil_off_rate = 0.1  # %/h, placeholder
-density_LH2 = 70.85  # kg/m3
-latent_heat = 447000  # J/kg
-T_ext_env = 300 # K
-thermalconductinner = 170
-
-Qinneeded = heat_in_calculation(boil_off_rate, inner_volume, density_LH2, latent_heat)
-
-height_array, length_array = tank_height(Rmax, Rmin, Lmax, step)
-r_out = []
-r_in = []
-
-for i in range(len(height_array)):
-    outer_radius = height_array[i]/2
-    length = length_array[i]
-    r_inner, r_outer = radius_outer(inner_volume, outer_radius, length, Qinneeded, thermalconductinner, 0.02, 300, 20)
-    r_out.append(r_outer)
-    r_in.append(r_inner)
-
-# minimise length so first one in array
-router = np.nonzero(r_in)[0]
-rinner = np.nonzero(r_out)[0]
-gap = router - rinner
-fuselage = Fuselage(Rmax, Rmin, Lmax, step)
-innertank = InnerTank(fuselage=fuselage, inner_volume=inner_volume, offset=offset)
-outertank = OuterTank(fuselage = fuselage, inner_tank = innertank)
-fit = FitCheck(fuselage = fuselage, innertank = innertank, outertank = outertank)
-plot = GeometryPlot(fuselage = fuselage, inner_tank = innertank, outer_tank = outertank)
-
-inner_dimensions = innertank.get_inner_tank_dimensions()
-outer_dimensions = outertank.get_outer_tank_dimensions()
-
-print(f'Inner tank dimensions: \nRadius: {round(inner_dimensions[0]*1000,5)} mm \nHeight: {inner_dimensions[0]*1000*0.75} mm \
-        \nTotal length: {round(1000*(inner_dimensions[0]*0.75*2+inner_dimensions[1]),3)} mm  \nLength (cyllindrical part): {round(inner_dimensions[1]*1000,5)} mm \nVolume: {inner_dimensions[2]} m^3')
-print('\n')
-print(f'Outer tank dimensions: \nRadius: {round(outer_dimensions[0]*1000,5)} mm \nHeight: {round(outer_dimensions[0]*1000*0.75,5)} mm \
-    \nTotal length: {round(1000*(outer_dimensions[0]*0.75*2+outer_dimensions[1]),5)} mm \nLength (cyllindrical part): {round(outer_dimensions[1]*1000,5)} mm \nVolume: {outer_dimensions[2]} m^3')
-
-# Check if the tank fits inside the fuselage, i. e. if the outer shell radius is not greater than the fuselage height at the minimum fuselage height location
-
-plot.get_tank_shape(inner_tank=True, outer_tank=False)
-plot.get_tank_shape(inner_tank=False, outer_tank=True)
-
-plt.show()
+p = 10e5   
 
 
-fit.check_if_outer_tank_fits()
+# 0 deg  = top of the dome
+# 90 deg = dome/cylinder transition
+angles_deg = [0, 30, 60, 90]
 
 
+# CALCULATIONS
+
+allowable_stress = yield_strength / safety_factor
+gamma = R**2 / H**2 - 1
+
+
+def von_mises(s1, s2):
+    # Equivalent stress for a 2D (thin-walled) stress state
+    return math.sqrt(s1**2 - s1 * s2 + s2**2)
+
+
+# all stresses scale with 1/t. So we calculate them for t = 1 m,
+# then the needed thickness is: t_min = stress(t=1) / allowable_stress
+t = 1
+
+print("gamma =", gamma)
+print("Allowable stress =", allowable_stress / 1e6, "MPa")
+print("Pressure =", p / 1e5, "bar")
+print()
+
+# ---------- Ellipsoidal dome ----------
+print("DOME")
+print(f"{'angle':>6} {'sigma_m*t':>12} {'sigma_h*t':>12} {'sigma_vm*t':>12} {'t_min':>10}")
+print(f"{'[deg]':>6} {'[N/m]':>12} {'[N/m]':>12} {'[N/m]':>12} {'[mm]':>10}")
+
+t_dome = 0
+for angle in angles_deg:
+    theta = math.radians(angle)
+    sin2 = math.sin(theta) ** 2
+
+    sigma_m = (p * R / (2 * t)) * math.sqrt((1 + gamma) / (1 + gamma * sin2))
+    sigma_h = (1 - gamma * sin2) * sigma_m
+    sigma_vm = von_mises(sigma_m, sigma_h)
+
+    t_needed = sigma_vm / allowable_stress
+    t_dome = max(t_dome, t_needed)
+
+    print(f"{angle:>6} {sigma_m:>12.1f} {sigma_h:>12.1f} {sigma_vm:>12.1f} {t_needed*1000:>10.4f}")
+
+# ---------- Cylinder ----------
+sigma_hoop_cyl = p * R / t
+sigma_axial_cyl = p * R / (2 * t)
+sigma_vm_cyl = von_mises(sigma_hoop_cyl, sigma_axial_cyl)
+t_cyl = sigma_vm_cyl / allowable_stress
+
+print()
+print("CYLINDER")
+print(f"sigma_hoop*t  = {sigma_hoop_cyl:.1f} N/m")
+print(f"sigma_axial*t = {sigma_axial_cyl:.1f} N/m")
+print(f"sigma_vm*t    = {sigma_vm_cyl:.1f} N/m")
+
+print()
+print(f"Minimum dome thickness     = {t_dome*1000:.4f} mm")
+print(f"Minimum cylinder thickness = {t_cyl*1000:.4f} mm")
