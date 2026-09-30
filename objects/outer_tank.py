@@ -33,9 +33,9 @@ class FitCheck:
         fuselage_heights = self.fuselage.fuselage_height
 
         tank_length_partial = outer_dimensions[0] * 0.75 + outer_dimensions[1]
-        tank_length_full = tank_length_partial + outer_dimensions[0] * 0.75
+        tank_length_full = tank_length_partial + 2 * outer_dimensions[0] * 0.75
 
-        id = int(round(tank_length_partial * self.fuselage.step))
+        id = int(round(tank_length_partial * self.fuselage.step)+1)
 
         height_fus_end = fuselage_heights[id]
 
@@ -43,7 +43,7 @@ class FitCheck:
         if outer_dimensions[0] <= height_fus_end and tank_length_full <= self.fuselage.Lmax:
             print("\nThe outer tank fits at the endpoint.")
         else:
-            print(f"\nThe outer tank does not fit at the endpoint. \nTank height at endpoint: {height_fus_end}")
+            print(f"\nThe outer tank does not fit at the endpoint. \nFuselage height at endpoint: {height_fus_end}")
 
 
 

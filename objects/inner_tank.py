@@ -18,7 +18,7 @@ class InnerTank:
         '''
 
         #Calculate max internal tank properties from available space within the fuselage
-        rmax = self.fuselage.Rmax - self.offset
+        rmax = self.fuselage.Rmax - 2* self.offset
         rmin = self.fuselage.Rmin - self.offset
         lmax = self.fuselage.Lmax - 2*rmin*0.75 - 2*self.offset
 

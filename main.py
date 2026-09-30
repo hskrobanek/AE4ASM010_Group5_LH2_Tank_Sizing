@@ -9,15 +9,15 @@ from cryotank_sizing.tank_general_properties import get_tank_volume, tank_height
 from cryotank_sizing.outer_shell import *
 
 # Define fuselage compartment geometry
-Rmax = 0.450                  # [m]
-Rmin = 0.300                  # [m]
-Lmax = 1.150                  # [m]
+Rmax = 1.022/2                  # [m]
+Rmin = 0.602/2                  # [m]
+Lmax = 1.680                  # [m]
 
 
-offset = 0.010                # TODO: Determine the offset
+offset = 0.035                # TODO: Determine the offset
 
 # Define inner volume and precision
-inner_volume = 0.2985           # TODO: Determine the inner volume
+inner_volume = 0.36           # TODO: Determine the inner volume
 step = 1000000
 
 # Inputs
